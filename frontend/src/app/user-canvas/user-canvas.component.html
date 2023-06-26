@@ -1,0 +1,15 @@
+<h2>User Canvas</h2>
+<div>
+  <p>My Selected Item:</p>
+  <div *ngIf="mySelectedItem">
+    <img [src]="mySelectedItem.imageUrl" alt="Item Image" width="80" height="80">
+    <p>{{ mySelectedItem.description }}</p>
+    <button (click)="cancelExchange()">Cancel Exchange</button>
+  </div>
+  <p>Other User's Selected Item:</p>
+  <div *ngIf="otherUserSelectedItem">
+    <img [src]="otherUserSelectedItem.imageUrl" alt="Item Image" width="80" height="80">
+    <p>{{ otherUserSelectedItem.description }}</p>
+    <button (click)="acceptExchange()">Accept Exchange</button>
+  </div>
+</div>

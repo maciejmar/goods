@@ -1,0 +1,6 @@
+<h2>Item Detail</h2>
+<div *ngIf="selectedItem">
+  <img [src]="selectedItem.imageUrl" alt="Item Image" width="80" height="80">
+  <p>{{ selectedItem.description }}</p>
+  <button (click)="exchangeItems()">Exchange</button>
+</div>

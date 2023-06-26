@@ -1,0 +1,13 @@
+<h2>My Items</h2>
+<div *ngFor="let item of myItems">
+  <!-- Display my items -->
+</div>
+
+<h2>Other Users' Items</h2>
+<div *ngFor="let user of otherUsers">
+  <h3>{{ user.username }}</h3>
+  <div *ngFor="let item of user.items">
+    <!-- Display other users' items -->
+    <button (click)="selectItemForExchange(item)">Select for Exchange</button>
+  </div>
+</div>

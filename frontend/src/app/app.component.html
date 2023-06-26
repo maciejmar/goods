@@ -1,0 +1,42 @@
+<!--
+<div class="container">
+  <h1>Welcome to the Exchange Items Application</h1>
+
+  <div *ngIf="!isLoggedIn">
+    <h2>Login</h2>
+    <form (ngSubmit)="login()">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" [(ngModel)]="loginForm.username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" [(ngModel)]="loginForm.password" required>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <h2>Register</h2>
+    <form (ngSubmit)="register()">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" [(ngModel)]="registerForm.username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" [(ngModel)]="registerForm.password" required>
+
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <div *ngIf="isLoggedIn">
+    <h2>Welcome, {{ currentUser.username }}!</h2>
+     Display user-specific content or navigate to other components 
+  </div>
+</div>
+-->
+
+<router-outlet></router-outlet>
+<h1>hello</h1>
+<!--
+<ng-container *ngIf="!isLoggedIn">
+  <app-registration></app-registration>
+</ng-container> 
+-->

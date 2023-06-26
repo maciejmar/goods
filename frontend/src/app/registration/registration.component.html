@@ -1,0 +1,43 @@
+
+<div class="registration-container">
+  <h2>Registration here</h2>
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" formControlName="username" class="form-control" required>
+      <div *ngIf="formControls['username'].errors?.['required']" class="error">Username is required</div>
+      <div *ngIf="formControls['username'].errors?.['minlength']" class="error">Username must be at least 4 characters long</div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" formControlName="password" class="form-control" required>
+      <div *ngIf="formControls['password'].errors?.['required']" class="error">Password is required</div>
+      <div *ngIf="formControls['password'].errors?.['minlength']" class="error">Password must be at least 6 characters long</div>
+    </div>
+  
+    <div class="form-group">
+      <button type="submit" [disabled]="loading">Register</button>
+      <div class="error" *ngIf="error">{{ error }}</div>
+    </div>
+  </form>
+</div>
+
+
+
+<!---
+<h2>Registration for you</h2>
+<form (ngSubmit)="onSubmit()" #registrationForm="ngForm">
+  <label for="username">Username:</label>
+  <input type="text" id="username" name="username" [(ngModel)]="username" required minlength="4">
+  <div *ngIf="registrationForm.controls['username'].invalid && (registrationForm.controls['username'].dirty || registrationForm.controls['username'].touched)">
+    <div *ngIf="registrationForm.controls['username'].errors">
+      Username is required.
+    </div>
+    <div *ngIf="registrationForm.controls['username'].errors">
+      Username must be at least 4 characters.
+    </div>
+  </div>
+
+  
+</form>
+-->
