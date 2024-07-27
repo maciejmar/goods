@@ -10,6 +10,9 @@ from functools import wraps
 import secrets
 import pdb
 from flask import make_response
+from bson import json_util, ObjectId
+import os
+from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
@@ -31,7 +34,7 @@ def generate_token(user_id):
 def verify_token(token):
     
     print('verification')
-    breakpoint()
+    
     try:
         payload = jwt.decode(token, 'secret_key', algorithms=['HS256'])
         print('payload token  ', payload)
@@ -75,7 +78,7 @@ def login():
         
         response = make_response({'message':'login successful'})
         response.headers['Authorization'] = f'Bearer {token}'
-        return redirect(url_for('dashboard', token = token))#jsonify(message= 'Login successful'),200
+        return redirect(url_for('dashboard', token = token))#jsonify(message= 'Login successful')
         
     else:
         return jsonify({'message': 'Invalid credentials are here'}), 401
@@ -139,7 +142,7 @@ def register():
 
 
 
-@app.route('/dashboard', methods=['GET'])
+@app.route('/dashboard', methods = ['GET'])
 def dashboard():
  # Get the token from the request headers
  
@@ -149,22 +152,26 @@ def dashboard():
     # Verify the JWT token
 
     username = verify_token(token)
-
+    
     if username:
         # Retrieve the user's items from the database
         user_items = db.items.find({'owner': username})
-
         # Retrieve a few items of other users for display on the dashboard
         other_users_items = db.items.find().limit(5)
-
+        
+        
+        
+        
         # Prepare the dashboard data
         dashboard_data = {
             'username': username,
-            'user_items': [item for item in user_items],  # Placeholder for user's items
-            'other_users_items': [item for item in other_users_items]  # Placeholder for items of other users
+            'user_items': [item for item in user_items], 
+            'other_users_items': [item for item in other_users_items]  
         }
-
-        return jsonify(dashboard_data), 200
+        dashboard_data_sanitized = json.loads(json_util.dumps(dashboard_data))
+        
+        print("dashboard data sanitzied ", dashboard_data_sanitized)
+        return dashboard_data_sanitized
     else:
         return jsonify({'message': 'Unauthorized'}), 401
  else: return  jsonify({'message':'there are no bearer token in headers'}),401
@@ -186,10 +193,38 @@ def get_items():
     query = {}
     if filter_category:
         query['category'] = filter_category
-    items = db.items.find(query).sort([(sort_field, sort_order)]).skip((page - 1) * limit).limit(limit)
+    
+    try:
+      items_cursor = db.items.find(query).sort([(sort_field, sort_order)]).skip((page - 1) * limit).limit(limit)
+      items = [item for item in items_cursor]
+       # Process the retrieved items as needed
+      items = json.loads(json_util.dumps(items))
+      return jsonify({'items': items}), 200
+    except Exception as e:
+      return jsonify({'message': 'Error occurred while retrieving items', 'error': str(e)}), 500
 
+    #items_cursor = db.items.find(query).sort([(sort_field, sort_order)]).skip((page - 1) * limit).limit(limit)
+    #items = list(items_cursor)   
+    #return jsonify({'items': items})
+
+@app.route('/showAllItems', methods=['GET'])
+def get_all_items():
+    # Get query parameters
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    filter_category = request.args.get('category', None)
+    sort_field = request.args.get('sort', 'name')
+    sort_order = int(request.args.get('order', 1))
+
+    # Apply pagination, filtering, and sorting
+    query = {}
+    if filter_category:
+        query['category'] = filter_category
+    #items = db.items.find(query).sort([(sort_field, sort_order)]).skip((page - 1) * limit).limit(limit)
+    items_cursor = db.items.find(query).sort([(sort_field, sort_order)]).skip((page - 1) * limit).limit(limit)
+    items = list(items_cursor)   
+    items = json.loads(json_util.dumps(items))
     return jsonify({'items': items})
-
 
 @app.route('/items/<item_id>', methods=['GET'])
 def get_item(item_id):
@@ -205,6 +240,45 @@ def get_user_items():
 def update_user_item(item_id):
     # Implement updating user's item logic
     pass
+
+@app.route('/dashboard/new-item', methods=['POST'])
+def add_new_item():
+   
+   reqbody = request.data.decode('UTF-8')
+   
+   
+   title = json.loads(reqbody)['title']
+   desc = json.loads(reqbody)['description']
+   if 'image' in request.files:
+        breakpoint()
+        image_file = request.files['image']
+        # Generate a secure filename for the image
+        filename = secure_filename(image_file.filename)
+        # Save the image to a designated folder
+        image_path = os.path.join(app.config['../frontend/src/assets/images'], filename)
+        image_file.save(image_path)
+        # Add the image path to the item data
+        item_data['image_path'] = image_path
+  
+   
+   if title:
+      
+        
+        if title:
+            # Retrieve the item data from the request
+            item_data = {"title": title,"description": desc}
+            
+            try:
+               # Insert the new item into the database
+               db.items.insert_one(item_data)
+               return jsonify({'message': 'New item added successfully'}), 200
+            except Exception as e:
+               return jsonify({'message': 'Error occurred while adding item, if you want know', 'error': str(e)}), 500
+
+        else:
+            return jsonify({'message': 'User not found'}), 404
+   else: return jsonify({'message':'bad token, my dear'}),403   
+
 
 @app.route('/user/profile', methods=['GET', 'PUT'])
 def user_profile():

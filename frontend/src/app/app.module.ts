@@ -6,12 +6,13 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { HomeComponent } from './home/home.component';
-import { ItemListComponent } from './item-list/item-list.component';
-import { ItemDetailComponent } from './item-detail/item-detail.component';
+import { ItemListComponent } from './dashboard/item-list/item-list.component';
+import { ItemDetailComponent } from './dashboard/item-detail/item-detail.component';
 import { UserCanvasComponent } from './user-canvas/user-canvas.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PaginationComponent } from './pagination/pagination.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { NewItemComponent } from './dashboard/new-item/new-item.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     UserCanvasComponent,
     PaginationComponent,
     RegistrationComponent,
-    DashboardComponent
+    DashboardComponent,
+    NewItemComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +37,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     HttpClientModule
   ],
   providers: [],
-  //bootstrap: [AppComponent]
+  bootstrap:[AppComponent]
+  
 })
 export class AppModule { }

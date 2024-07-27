@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ApiService } from './../api.service'; // Replace with your actual API service
-import { FormsModule } from "@angular/forms"
+import { Component, OnInit, Input } from '@angular/core';
+import { ApiService } from '../../api.service'; // Replace with your actual API service
+import { FormsModule } from "@angular/forms";
+import { ItemService } from 'src/app/item.service';
 
 @Component({
   selector: 'app-item-list',
@@ -8,6 +9,7 @@ import { FormsModule } from "@angular/forms"
   styleUrls: ['./item-list.component.css']
 })
 export class ItemListComponent implements OnInit {
+  @Input()
   items: any[] = [];
 
   currentPage = 1;

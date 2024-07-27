@@ -5,6 +5,7 @@ import { RegistrationComponent } from './registration/registration.component';
 import { HomeComponent } from './home/home.component';
 import { UserCanvasComponent } from './user-canvas/user-canvas.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ItemListComponent } from './dashboard/item-list/item-list.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -12,7 +13,10 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'user-canvas', component: UserCanvasComponent },
   { path: 'dashboard', component:DashboardComponent },
+  { path: 'showAllItems', component:DashboardComponent},
+  { path: 'items', component: ItemListComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
+  
 ];
 
 @NgModule({

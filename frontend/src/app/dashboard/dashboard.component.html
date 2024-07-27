@@ -1,7 +1,38 @@
-<p>dashboard works!</p>
+<h1>Exchanging Place. Your Dashboard.</h1>
 <div> Here are your items
 {{userItems}}
 </div>
 <div>Here are the other items, you cane have
 {{otherUsersItems}}
 </div>
+<div>
+    <h1>Welcome to the Dashboard, {{ username }}</h1>
+    <h2>Your Items</h2>
+    <div>
+      <img src="../../assets/images/profile_image.png" sizes="(min-width: 800px)"  alt="Example Image">
+  </div>
+    <app-item-list [items]="userItems"></app-item-list>
+    <h2>Other Users' Items</h2>
+    <app-item-list [items]="otherUsersItems"></app-item-list>
+</div>
+  <app-new-item (itemAdded)="addItem($event)"></app-new-item>
+
+
+  <button (click)="showNewItemForm()">New Item</button>
+
+  <app-new-item *ngIf="showNewItem" (itemAdded)="addItem($event)"></app-new-item>
+
+  <div *ngIf="items.length > 0">
+    <h3>Your Items now</h3>
+    
+    <ul>
+      <div *ngFor="let item of items">
+        <li>{{ item.title }}, {{ item.description}}</li>
+        <li>
+          <img [src]="item.image" alt="item_image">
+        </li>
+      </div>
+    </ul>
+  </div>
+  <button (click)="showAllItems()">Show All Items</button>
+  

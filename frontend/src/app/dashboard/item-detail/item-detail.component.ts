@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from './../api.service'; // Replace with your actual API service
+import { ApiService } from '../../api.service'; // Replace with your actual API service
 
 @Component({
   selector: 'app-item-detail',

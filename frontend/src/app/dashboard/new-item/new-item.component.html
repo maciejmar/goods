@@ -1,0 +1,30 @@
+<p>new-item works!</p>
+<form (submit)="addItem()">
+    <div>
+      <label for="title">Title:</label>
+      <input type="text" id="title" [(ngModel)]="newItem.title" name="title" required>
+    </div>
+    <div>
+      <label for="description">Description:</label>
+      <textarea id="description" [(ngModel)]="newItem.description" name ="description" placeholder="Describe here your item" required></textarea>
+    </div>
+    <div>
+        <label for="category">Category:</label>
+        <select  id="category" [(ngModel)]="newItem.category" name="category">
+            <option hidden value="undefined" disabled selected >choose category</option>
+            <option value="games">Games</option>
+            <option value="tools">Tools</option>
+            <option value="clothes">Clothes</option>
+            <option value="toys">Toys</option>
+            <option value="electronics">Electronics</option>
+            <option value="books">Books and Recordings</option>
+            <option value="Others">Others</option>
+        </select>
+    </div>
+    <div>
+       <label for = "image">Upload Image</label>
+       <input type="file" (change)="onFileSelected($event)" name="newItem.image" accept="image/*">
+       <input type="image" id="image" [(ngModel)]="newItem.image" name="image">
+    </div>
+    <button type="submit">Add Item</button>
+  </form>
