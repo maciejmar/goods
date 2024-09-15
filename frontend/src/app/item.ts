@@ -1,12 +1,13 @@
 export interface Item {
-   
+
         _id?: string;
         name: string;
         description: string;
         category: string;
         price: number;
-        owner: string; 
+        owner: string;
         image?: File;
-        createdAt?: Date;       
-      
+        createdAt?: Date;
+        selected?: boolean;
+        selectedByUsers?: User[];
 }
