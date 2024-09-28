@@ -1,40 +1,46 @@
 from django.shortcuts import render
-from .models import goods_coollection
+from .models import goods_coollection, User
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from db_connection import db  
+from pydantic import ValidationError
+from bson.objectid import ObjectId
+import hashlib
 import json
+
+
 #the views are to created below
 
 goods_collection = db['user'] 
+
+# Home page - home address response
 def index(request):
     return HttpResponse("<h1>App goods-django-mongodb is running</h1>")
 
+# Create a new user POST request
 @csrf_exempt
 def add_user(request):
     if request.method == 'POST':
         try:
-            # Parse JSON data from the request body
             data = json.loads(request.body)
-            # Validate data using the User model
+            # Hash the password (ensure you have hashlib imported)
+            if 'password' in data:
+                data['password'] = hashlib.sha256(data['password'].encode()).hexdigest()
             user = User(**data)
-            # Convert to dictionary and insert into MongoDB
             result = goods_collection.insert_one(user.dict(exclude={'_id'}))
-            # Return a success response with the inserted ID
             return JsonResponse({
                 'message': 'New user added',
                 'user_id': str(result.inserted_id)
             }, status=201)
         except ValidationError as e:
-            # validation errors occure
             return JsonResponse({'error': e.errors()}, status=400)
         except Exception as e:
-            # Handle other exceptions
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid HTTP method. Use POST.'}, status=405)
 
 
+# List all users stored in User collection
 def get_all_users(request):
     if request.method == 'GET':
         try:
@@ -52,5 +58,56 @@ def get_all_users(request):
     else:
         # Return an error if the HTTP method is not GET
         return JsonResponse({'error': 'Invalid HTTP method. Use GET.'}, status=405)
+    
 
+# GET user by id of the User collection
+@csrf_exempt
+def get_user(request, user_id):
+    if request.method == 'GET':
+        try:
+            # Fetch the user by the given ObjectId
+            user = goods_collection.find_one({'_id': ObjectId(user_id)})
+            if user:
+                # Convert ObjectId to string before returning the user data
+                user['_id'] = str(user['_id'])
+                return JsonResponse(user, status=200)
+            else:
+                return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method. Use GET.'}, status=405)
 
+# Delete request of the User collection
+@csrf_exempt
+def delete_user(request, user_id):
+    if request.method == 'DELETE':
+        try:
+            # Attempt to delete the user by the given ObjectId
+            result = goods_collection.delete_one({'_id': ObjectId(user_id)})
+            if result.deleted_count == 1:
+                return JsonResponse({'message': 'User deleted successfully'}, status=200)
+            else:
+                return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method. Use DELETE.'}, status=405)
+
+# Find the id of User by the unique email    
+@csrf_exempt
+def get_user_by_email(request, email):
+    if request.method == 'GET':
+        try:
+            # Search for a user with the provided email
+            user = goods_collection.find_one({'email': email})
+            if user:
+                # Convert ObjectId to string before returning the user ID
+                user_id = str(user['_id'])
+                return JsonResponse({'_id': user_id}, status=200)
+            else:
+                return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method. Use GET.'}, status=405)
