@@ -1,3 +1,63 @@
 frontend/node_modules
 frontend/.angular/cache
 .DS_Store 
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*.pyo
+*.pyd
+__pycache__/
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+env/
+venv/
+.venv/
+ENV/
+venviroment/
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows files
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+
+# Django files
+*.pot
+*.py[cod]
+*.sqlite3
+db.sqlite3
+
+# MongoDB dump files
+dump/
+
+# IDE/editor specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node.js dependencies (optional)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+
+# Static and media files
+staticfiles/
+media/
+
+# Miscellaneous
+*.swp

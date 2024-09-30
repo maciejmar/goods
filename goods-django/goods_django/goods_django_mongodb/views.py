@@ -68,8 +68,7 @@ def get_user(request, user_id):
             # Fetch the user by the given ObjectId
             user = goods_collection.find_one({'_id': ObjectId(user_id)})
             if user:
-                # Convert ObjectId to string before returning the user data
-                user['_id'] = str(user['_id'])
+                user['_id'] = str(user['_id'])  # Convert ObjectId to string
                 return JsonResponse(user, status=200)
             else:
                 return JsonResponse({'error': 'User not found'}, status=404)
