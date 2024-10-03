@@ -110,3 +110,28 @@ def get_user_by_email(request, email):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid HTTP method. Use GET.'}, status=405)
+    
+@csrf_exempt
+def update_user(request, user_id):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)  # Parse the incoming JSON data
+            # Ensure the ObjectId is valid
+            if not ObjectId.is_valid(user_id):
+                return JsonResponse({'error': 'Invalid user ID format'}, status=400)
+
+            # Find and update the user document by its _id
+            result = goods_collection.update_one(
+                {'_id': ObjectId(user_id)},
+                {'$set': data}
+            )
+
+            if result.matched_count == 0:
+                return JsonResponse({'error': 'User not found'}, status=404)
+
+            return JsonResponse({'message': 'User updated successfully'}, status=200)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method. Use PUT.'}, status=405)
