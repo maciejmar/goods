@@ -18,7 +18,8 @@ env/
 venv/
 .venv/
 ENV/
-venviroment/
+venviroment
+.venviroment/
 
 # macOS files
 .DS_Store
